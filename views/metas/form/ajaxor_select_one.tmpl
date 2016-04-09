@@ -1,0 +1,21 @@
+<div class="qor-field">
+  <label class="qor-field__label" for="{{.InputId}}">
+    {{meta_label .Meta}}
+  </label>
+
+  <div class="qor-field__show">
+    {{.Value}}
+  </div>
+
+  <div class="qor-field__block qor-field__edit">
+    <select class="qor-field__input" id="{{.InputId}}" style="width: 100%;" name="{{.InputName}}" {{if not (has_update_permission .Meta)}}disabled{{end}}>
+      {{ $value := (raw_value_of .ResourceValue .Meta) }}
+      <option value="{{ primary_key_of $value }}" selected>{{ stringify $value }}</option>
+    </select>
+    <script type="text/javascript">
+jQuery(document).ready(function(){
+  initMeta({{.InputId}}, {{url_for .ResourceValue}}, {{resource_name .Meta}}, {{.Meta.Name}});
+})
+    </script>
+  </div>
+</div>
