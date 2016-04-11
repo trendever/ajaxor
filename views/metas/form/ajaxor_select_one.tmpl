@@ -14,7 +14,7 @@
     </select>
     <script type="text/javascript">
 jQuery(document).ready(function(){
-  initMeta({{.InputId}}, {{url_for .ResourceValue}}, {{resource_name .Meta}}, {{.Meta.Name}});
+  initMeta({{.InputId}}, {{ajaxor_url .Context .BaseResource .ResourceValue}}, {{resource_name .Meta}}, {{.Meta.Name}});
 })
     </script>
   </div>

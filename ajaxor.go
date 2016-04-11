@@ -5,6 +5,7 @@ import (
 	"github.com/qor/admin"
 	"github.com/qor/qor/utils"
 	"github.com/qor/roles"
+	"path"
 	"reflect"
 	"strconv"
 )
@@ -48,6 +49,11 @@ func init() {
 // Init initializes ajaxor
 func Init(adm *admin.Admin) {
 	adm.RegisterFuncMap("resource_name", resourceName)
+	adm.RegisterFuncMap("ajaxor_url", ajaxorURL)
+
+	router := adm.GetRouter()
+	path := "/:base/:base_id/!metas/:resource/:name"
+	router.Get(path, getVariantsHandler)
 }
 
 // register router handlers
@@ -55,9 +61,32 @@ func register(res *admin.Resource) {
 	// load js files
 	res.UseTheme("select2.min") // jquery select2 library
 	res.UseTheme("ajaxor")      // our initialization code
+}
 
-	router := res.GetAdmin().GetRouter()
-	router.Get(fmt.Sprintf("/%v/%v/!metas/:resource/:name", res.ToParam(), res.ParamIDName()), getVariantsHandler)
+// generate resource url
+// different from qor URLFor (it appends weird prefix if it's child resource)
+func ajaxorURL(context *admin.Context, res *admin.Resource, value interface{}) string {
+
+	var (
+		// main admin prefix
+		prefix = res.GetAdmin().GetRouter().Prefix
+
+		// ID of entry
+		primaryKey = utils.Stringify(context.GetDB().NewScope(value).PrimaryKeyValue())
+	)
+
+	return path.Join(prefix, res.ToParam(), primaryKey)
+}
+
+// returns resource name by raw value
+func getResourceName(value interface{}) string {
+	// assume it's ResourceNamer -- get resource name
+	if inter, ok := value.(admin.ResourceNamer); value != nil && ok {
+		return inter.ResourceName()
+	}
+
+	// last resort: raw struct name
+	return reflect.Indirect(reflect.ValueOf(value)).Type().String()
 }
 
 // resourceName generates resourceName; that uses our meta model
@@ -72,18 +101,27 @@ func resourceName(meta *admin.Meta) string {
 	// get empty struct
 	value := reflect.New(elemType).Interface()
 
-	// assume it's ResourceNamer -- get resource name
-	if inter, ok := value.(admin.ResourceNamer); value != nil && ok {
-		return inter.ResourceName()
-	}
+	return getResourceName(value)
+}
 
-	utils.ExitWithMsg(fmt.Printf("Could not generate resource name for value %#v", value))
-	return ""
+// restore base context (of base resource we are selecting in)
+func resourceContext(context *admin.Context) {
+
+	var (
+		resourceName = context.Request.URL.Query().Get(":base")
+		resource     = context.Admin.GetResource(resourceName)
+		resourceID   = context.Request.URL.Query().Get(":base_id")
+	)
+
+	context.Resource = resource
+	context.ResourceID = resourceID
 }
 
 // getVariantsHandler returns possible variants for custom select_one, select_many fields
 // @TODO: check permissions
 func getVariantsHandler(context *admin.Context) {
+
+	resourceContext(context)
 
 	// Ctx resource is what we are selecting in (for example, Order)
 	// This handler is run from some specific order (for example, order{id:1})

@@ -57,6 +57,7 @@ In order to make Ajaxor work we have to:
 
 * Does not use standard material-design theme. 
 * I don't like binding the routes to every resource. Maybe I should context manually?
+* Subresource fix
 
 ## License
 
