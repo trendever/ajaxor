@@ -31,9 +31,6 @@ In order to make Ajaxor work we have to:
 
 1) Register both resources for Parent and Child in qor.
 
-  * Remember, that auto-generated .Meta.Resource is not registered in qor. Create own one
-    * Resources can be invisible :)
-
 2) Child model _must_ implement qor.admin.ResourceNamer interface. 
 
   ```go
@@ -51,13 +48,13 @@ In order to make Ajaxor work we have to:
 	})
   ```
 
-4) Ajax selects should now replace default ones
+4) When using collection_edit edit control, specify .Resource field (your _added to qor_ and probably invisible resource) in .Meta explitly. 
+
+5) Ajax selects should now replace default ones
 
 ## Current issues 
 
 * Does not use standard material-design theme. 
-* I don't like binding the routes to every resource. Maybe I should context manually?
-* Subresource fix
 
 ## License
 
