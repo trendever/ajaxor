@@ -11,7 +11,7 @@
       {{ if (and $url (defined_resource_show_page $res)) }}
         <a href="{{$url}}">{{stringify $value}}</a>
       {{ else }}
-        <p>{{ stringify $value }}</p>
+        <p> {{ stringify $value }} </p>
       {{ end }}
 
     {{end}}
