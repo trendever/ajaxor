@@ -1,0 +1,12 @@
+{{$res := .Meta.Resource}}
+{{$current_values := (raw_value_of .ResourceValue .Meta)}}
+
+{{range $value := $current_values}}
+  {{$url := url_for $value}}
+  {{ if (and $url (defined_resource_show_page $res)) }}
+    <a href="{{$url}}">{{stringify $value}}</a>
+  {{ else }}
+    {{ stringify $value }}
+  {{ end }}
+
+{{end}}
