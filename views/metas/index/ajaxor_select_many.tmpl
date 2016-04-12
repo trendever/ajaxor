@@ -1,9 +1,10 @@
 {{$res := .Meta.Resource}}
 {{$current_values := (raw_value_of .ResourceValue .Meta)}}
+{{$ctx := .Context }}
 
 {{range $value := $current_values}}
-  {{$url := url_for $value}}
-  {{ if (and $url (defined_resource_show_page $res)) }}
+  {{$url := url_for_override $ctx $value}}
+  {{ if $url }}
     <a href="{{$url}}">{{stringify $value}}</a>
   {{ else }}
     {{ stringify $value }}

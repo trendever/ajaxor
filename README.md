@@ -52,6 +52,15 @@ In order to make Ajaxor work we have to:
 
 5) Ajax selects should now replace default ones
 
+6) There's also URL overriding mechanism available. In case you don't have a separate Visible resource for Child model, you can still make it clickable:
+
+  ```go
+  func (c Child) GetURLValue() interface{} {
+    // return parent stub
+    return Parent{Model: gorm.Model{ID: c.ParentID}}
+  }
+  ```
+
 ## Current issues 
 
 * Does not use standard material-design theme. 
