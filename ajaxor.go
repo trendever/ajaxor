@@ -120,8 +120,8 @@ func getVariantsHandler(context *admin.Context) {
 	}
 
 	// find selected record (we work in it's context)
-	record, err := context.FindOne()
-	addError(context, err)
+	// error is ignored -- for create mode
+	record, _ := context.FindOne()
 
 	// context we will search entries in
 	searchCtx := context.Clone()
