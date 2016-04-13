@@ -28,6 +28,7 @@ func Meta(res *admin.Resource, meta *admin.Meta) {
 		resources[res.Name] = res
 		register(res)
 	}
+	return
 
 	switch meta.Type { // now, we can change template to ours
 	case "select_one":
@@ -120,8 +121,8 @@ func getVariantsHandler(context *admin.Context) {
 	}
 
 	// find selected record (we work in it's context)
-	record, err := context.FindOne()
-	addError(context, err)
+	record, _ := context.FindOne()
+	//addError(context, err)
 
 	// context we will search entries in
 	searchCtx := context.Clone()
