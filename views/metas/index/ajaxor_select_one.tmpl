@@ -1,8 +1,8 @@
 {{ $value := (raw_value_of .ResourceValue .Meta) }}
-{{$res := .Meta.Resource}}
-{{$url := url_for_override .Context $value}}
 
-{{ if $url }}
+{{$res := .Meta.Resource}}
+{{$url := url_for $value}}
+{{ if (and $url (defined_resource_show_page $res)) }}
   <a href="{{$url}}">{{stringify $value}}</a>
 {{ else }}
   <p> {{ stringify $value }} </p>

@@ -5,6 +5,8 @@ import (
 	"github.com/qor/admin"
 	"github.com/qor/qor/utils"
 	"github.com/qor/roles"
+	"path"
+	"reflect"
 	"strconv"
 )
 
@@ -46,8 +48,7 @@ func init() {
 
 // Init initializes ajaxor
 func Init(adm *admin.Admin) {
-	adm.RegisterFuncMap("resource_name", ResourceName)
-	adm.RegisterFuncMap("url_for_override", URLForOverride)
+	adm.RegisterFuncMap("resource_name", resourceName)
 	adm.RegisterFuncMap("ajaxor_url", ajaxorURL)
 
 	router := adm.GetRouter()
@@ -60,6 +61,47 @@ func register(res *admin.Resource) {
 	// load js files
 	res.UseTheme("select2.min") // jquery select2 library
 	res.UseTheme("ajaxor")      // our initialization code
+}
+
+// generate resource url
+// different from qor URLFor (it appends weird prefix if it's child resource)
+func ajaxorURL(context *admin.Context, res *admin.Resource, value interface{}) string {
+
+	var (
+		// main admin prefix
+		prefix = res.GetAdmin().GetRouter().Prefix
+
+		// ID of entry
+		primaryKey = utils.Stringify(context.GetDB().NewScope(value).PrimaryKeyValue())
+	)
+
+	return path.Join(prefix, res.ToParam(), primaryKey)
+}
+
+// returns resource name by raw value
+func getResourceName(value interface{}) string {
+	// assume it's ResourceNamer -- get resource name
+	if inter, ok := value.(admin.ResourceNamer); value != nil && ok {
+		return inter.ResourceName()
+	}
+
+	// last resort: raw struct name
+	return reflect.Indirect(reflect.ValueOf(value)).Type().String()
+}
+
+// resourceName generates resourceName; that uses our meta model
+//  model should implement admin.ResourceNamer interface
+func resourceName(meta *admin.Meta) string {
+	// follow ptr && slice
+	elemType := meta.FieldStruct.Struct.Type
+	for elemType.Kind() == reflect.Slice || elemType.Kind() == reflect.Ptr {
+		elemType = elemType.Elem()
+	}
+
+	// get empty struct
+	value := reflect.New(elemType).Interface()
+
+	return getResourceName(value)
 }
 
 // restore base context (of base resource we are selecting in)
