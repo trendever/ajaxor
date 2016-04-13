@@ -5,9 +5,9 @@
   </label>
 
   <div class="qor-field__show">
-    {{$res := .ResourceValue}}
+    {{$res := .Meta.Resource}}
     {{$url := url_for_override .Context $value}}
-    {{ if (and $url $value) }}
+    {{ if $url }}
       <a href="{{$url}}">{{stringify $value}}</a>
     {{ else }}
       <p> {{ stringify $value }} </p>

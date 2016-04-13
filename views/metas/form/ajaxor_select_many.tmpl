@@ -9,7 +9,7 @@
     {{$ctx := .Context}}
     {{range $value := $current_values}}
       {{$url := url_for_override $ctx $value}}
-      {{ if (and $url $value) }}
+      {{ if $url }}
         <a href="{{$url}}">{{stringify $value}}</a>
       {{ else }}
         <p> {{ stringify $value }} </p>
