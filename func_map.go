@@ -21,6 +21,10 @@ type URLOverrider interface {
 //  so it will return (stub) object of it's parent (and thus link)
 func URLForOverride(context *admin.Context, value interface{}) string {
 
+	if value == nil {
+		return ""
+	}
+
 	if overrider, ok := value.(URLOverrider); ok {
 		value = overrider.GetURLValue()
 	}
