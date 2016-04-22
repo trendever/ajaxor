@@ -8,7 +8,7 @@
     {{$res := .Meta.Resource}}
     {{$url := url_for_override .Context $value}}
     {{ if $url }}
-      <a href="{{$url}}">{{stringify $value}}</a>
+      <a data-url="{{$url}}" href="{{$url}}">{{stringify $value}}</a>
     {{ else }}
       <p> {{ stringify $value }} </p>
     {{ end }}
