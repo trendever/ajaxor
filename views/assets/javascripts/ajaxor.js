@@ -1,5 +1,7 @@
-function initMeta(inputId, baseUrl, resourceName, metaName) {
+function initMeta(inputId, baseUrl, resourceName, metaName, placeholder) {
   $("#" + inputId).select2({
+    allowClear: true,
+    placeholder: placeholder,
     ajax: {
       url: baseUrl + "/!metas/" + resourceName + "/" + metaName,
       cache: true,
