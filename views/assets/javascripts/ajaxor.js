@@ -1,5 +1,5 @@
 function initMeta(inputId, baseUrl, resourceName, metaName, placeholder) {
-  $("#" + inputId).each(function (el) { el.select2({
+  $("#" + inputId).select2({
     allowClear: true,
     placeholder: placeholder,
     ajax: {
@@ -24,5 +24,5 @@ function initMeta(inputId, baseUrl, resourceName, metaName, placeholder) {
         };
       }
     }
-  });});
+  });
 }
