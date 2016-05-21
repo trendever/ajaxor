@@ -1,5 +1,5 @@
 function initMeta(inputId, baseUrl, resourceName, metaName, placeholder) {
-  $("#" + inputId).select2({
+  $("select[id=" + inputId + "]").select2({
     allowClear: true,
     placeholder: placeholder,
     ajax: {
@@ -25,4 +25,6 @@ function initMeta(inputId, baseUrl, resourceName, metaName, placeholder) {
       }
     }
   });
+  // @TODO: dirty hack. wtf happens?
+  $("span.select2:nth-child(3)").hide();
 }
