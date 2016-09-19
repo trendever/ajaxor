@@ -155,8 +155,9 @@ func getVariantsHandler(context *admin.Context) {
 		Offset(searchPage * pageSize),
 	)
 
-	// do the search using meta.GetCollection
-	out := meta.GetCollection(record, searchCtx)
+	out := meta.Config.(interface {
+		GetCollection(value interface{}, context *admin.Context) [][]string
+	}).GetCollection(record, &admin.Context{Context: searchCtx})
 	context.JSON("show", map[string]interface{}{"collection": out})
 }
 
